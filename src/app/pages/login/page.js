@@ -1,12 +1,25 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout,
+} from "../../../features/auth/authSlice";
+import { loginUser } from "@/lib/api/auth";
+import { FadeLoader } from "react-spinners";
+import Swal from "sweetalert2";
 
 function Login() {
+  const dispatch = useDispatch();
+  const { loading, error, token, user } = useSelector((state) => state.auth);
   // form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("patient");
+  // const [loading, setLoading] = useState(false);
 
   // error state
   const [errors, setErrors] = useState({ email: "", password: "" });
@@ -29,8 +42,10 @@ function Login() {
   };
 
   // handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // setLoading(true);
+    dispatch(loginStart());
 
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
@@ -39,7 +54,37 @@ function Login() {
       setErrors({ email: emailError, password: passwordError });
       return;
     }
-
+    const credentials = { email, password, role };
+    try {
+      const res = await loginUser(credentials);
+      if (res.status === 200) {
+        Swal.fire({
+          title: "Login successful!",
+          icon: "success",
+          draggable: true,
+        });
+        // alert("Login successful!");
+        const user = res.data.data.user;
+        dispatch(loginSuccess(res.data.data.token, user));
+        localStorage.setItem("token", res.data.data.token);
+        // Redirect based on role
+        if (role === "patient") {
+          setTimeout(() => {
+          window.location.href = "/patient/dashboard";
+          }, 1500);
+        } else if (role === "doctor") {
+          setTimeout(() => {
+          // window.location.href = "/doctor/dashboard";
+          }, 1500);
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Invalid credentials. Please try again.");
+      } else {
+        alert("Login failed. Please try again later.");
+      }
+    }
     console.log("Form Submitted ✅", { email, password, role });
   };
 
@@ -53,7 +98,12 @@ function Login() {
           Sign in to your account
         </h2>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-10 mx-auto w-full max-w-sm">
+          {loading && (
+            <div className="flex items-center justify-center mt-5 absolute sm:mx-auto sm:w-full sm:max-w-sm rounded-md  py-20">
+              <FadeLoader color="#118bdc" loading={loading} />
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
@@ -150,7 +200,7 @@ function Login() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                {loading ? "Signing in..." : "Sign in"}
               </button>
             </div>
           </form>

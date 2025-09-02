@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import RoleSwitch from "../../../components/Switch";
 import Link from "next/link";
+import { registerPatient, registerDoctor } from "../../../lib/api/auth";
 
 export default function Register() {
   const [role, setRole] = useState("patient");
@@ -63,9 +64,9 @@ export default function Register() {
       case "password":
         error = validatePassword(value);
         break;
-      case "photo_url":
-        error = validatePhotoURL(value);
-        break;
+      //   case "photo_url":
+      //     error = validatePhotoURL(value);
+      //     break;
       case "specialization":
         if (role === "doctor") error = validateSpecialization(value);
         break;
@@ -73,7 +74,7 @@ export default function Register() {
     setErrors({ ...errors, [name]: error });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check all validations before submit
@@ -81,16 +82,63 @@ export default function Register() {
       name: validateName(form.name),
       email: validateEmail(form.email),
       password: validatePassword(form.password),
-      photo_url: validatePhotoURL(form.photo_url),
-      specialization: role === "doctor" ? validateSpecialization(form.specialization) : "",
+      //   photo_url: validatePhotoURL(form.photo_url),
+      specialization:
+        role === "doctor" ? validateSpecialization(form.specialization) : "",
     };
     setErrors(newErrors);
 
     const hasError = Object.values(newErrors).some((err) => err !== "");
     if (!hasError) {
-      console.log("Form Submitted ✅", { ...form, role });
-      alert("Registration successful!");
-      // Submit form logic here
+      // console.log("Form Submitted ✅", { ...form, role });
+      // alert("Registration successful!");
+      if (role === "patient") {
+        const user = {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          photo_url: form.photo_url,
+        };
+        try {
+          const res = await registerPatient(user);
+          if (res.status === 201) {
+            alert("Registration successful! Please login.");
+            console.log(res.data);
+          }
+        } catch (error) {
+          console.error("Registration failed:", error);
+          if (error.response && error.response.status === 409) {
+            alert("User already exists. Please login.");
+          } else {
+            alert("Registration failed. Please try again.");
+          }
+        }
+      } else {
+        const user = {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          photo_url: form.photo_url,
+          specialization: form.specialization,
+        };
+        try {
+          const res = await registerDoctor(user);
+          if (res.status === 201) {
+            alert("Registration successful! Please login.");
+            console.log(res.data);
+          }
+        } catch (error) {
+          console.error("Registration failed:", error);
+          if (error.response && error.response.status === 409) {
+            alert("User already exists. Please login.");
+          } else {
+            alert("Registration failed. Please try again.");
+          }
+        }
+      }
+    } else {
+      console.log("Validation Errors ❌", newErrors);
+      alert("Please fix the validation errors before submitting.");
     }
   };
 
