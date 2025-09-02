@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import RoleSwitch from "../../../components/Switch";
+import Link from "next/link";
 
 export default function Register() {
   const [role, setRole] = useState("patient");
@@ -95,7 +96,9 @@ export default function Register() {
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <h1 className="mx-auto h-10 w-auto text-blue-400 text-3xl font-bold">DOCTOR&#39;S</h1>
+      <h1 className="mx-auto h-10 w-auto text-blue-400 text-3xl font-bold">
+        DOCTOR&#39;S
+      </h1>
       <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
         Register your account
       </h2>
@@ -109,7 +112,12 @@ export default function Register() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Full Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-900">Full Name</label>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Full Name
+            </label>
             <div className="mt-2">
               <input
                 id="name"
@@ -119,13 +127,20 @@ export default function Register() {
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
               />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-900">Email address</label>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Email address
+            </label>
             <div className="mt-2">
               <input
                 id="email"
@@ -136,13 +151,20 @@ export default function Register() {
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-900">Password</label>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Password
+            </label>
             <div className="mt-2">
               <input
                 id="password"
@@ -152,13 +174,20 @@ export default function Register() {
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
           </div>
 
           {/* Photo URL */}
           <div>
-            <label htmlFor="photo_url" className="block text-sm font-medium text-gray-900">Photo URL</label>
+            <label
+              htmlFor="photo_url"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Photo URL
+            </label>
             <div className="mt-2">
               <input
                 id="photo_url"
@@ -169,14 +198,21 @@ export default function Register() {
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
               />
-              {errors.photo_url && <p className="text-red-500 text-sm mt-1">{errors.photo_url}</p>}
+              {errors.photo_url && (
+                <p className="text-red-500 text-sm mt-1">{errors.photo_url}</p>
+              )}
             </div>
           </div>
 
           {/* Specialization (Doctor Only) */}
           {role === "doctor" && (
             <div>
-              <label htmlFor="specialization" className="block text-sm font-medium text-gray-900">Specialization</label>
+              <label
+                htmlFor="specialization"
+                className="block text-sm font-medium text-gray-900"
+              >
+                Specialization
+              </label>
               <div className="mt-2">
                 <input
                   id="specialization"
@@ -186,7 +222,11 @@ export default function Register() {
                   onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                 />
-                {errors.specialization && <p className="text-red-500 text-sm mt-1">{errors.specialization}</p>}
+                {errors.specialization && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.specialization}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -201,6 +241,15 @@ export default function Register() {
             </button>
           </div>
         </form>
+        <p className="mt-10 text-center text-sm text-gray-500">
+          Are you a registered user?{" "}
+          <Link
+            href="/pages/login"
+            className="font-semibold text-indigo-600 hover:text-indigo-500"
+          >
+            Login Now.
+          </Link>
+        </p>
       </div>
     </div>
   );
