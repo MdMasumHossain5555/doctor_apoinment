@@ -6,7 +6,7 @@ export default function DoctorCard({ doctor, onBook }) {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center space-y-2">
       <Link
-        href={doctor.photo}
+        href={"#"}
         alt={doctor.name}
         className="w-24 h-24 rounded-full object-cover"
       />

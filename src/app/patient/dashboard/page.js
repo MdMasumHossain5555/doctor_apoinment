@@ -1,31 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DoctorCard from "../../../components/DoctorCard";
 import AppointmentModal from "../../../components/modal/ApoinmentModal";
 import AppointmentList from "../../../components/ApoinmentList";
+import { getAllDoctors } from "@/lib/api/doctor";
+import { getAllSpecializations } from "@/lib/api/specializations";
 
 export default function Dashboard() {
-  const doctors = [
-    {
-      id: 1,
-      name: "Dr. John Doe",
-      specialization: "Cardiologist",
-      photo: "https://randomuser.me/api/portraits/men/11.jpg",
-    },
-    {
-      id: 2,
-      name: "Dr. Jane Smith",
-      specialization: "Dentist",
-      photo: "https://randomuser.me/api/portraits/women/12.jpg",
-    },
-    {
-      id: 3,
-      name: "Dr. Mike Lee",
-      specialization: "Neurologist",
-      photo: "https://randomuser.me/api/portraits/men/13.jpg",
-    },
-    // ... more doctors
-  ];
+  const [doctors, setDoctors] = useState([]);
+  const [specializations, setSpecializations] = useState([]);
+  useEffect(() => {
+    const specializations = async () => {
+      try {
+        const res = await getAllSpecializations();
+        if (res.status === 200) {
+          console.log(res.data.data);
+          setSpecializations(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching specializations:", error);
+      }
+    };
+    specializations();
+    // Fetch doctors from API
+    const fetchDoctors = async () => {
+      try {
+        const res = await getAllDoctors({
+          page: 1,
+          limit: 10,
+          search: "",
+          specialization: "",
+        });
+        if (res.status === 200) {
+          setDoctors(res.data.data);
+          console.log(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+      } 
+    };
+    fetchDoctors();
+  }, []);
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
@@ -65,9 +80,11 @@ export default function Dashboard() {
           className="border p-2 rounded"
         >
           <option value="All">All Specializations</option>
-          <option value="Cardiologist">Cardiologist</option>
-          <option value="Dentist">Dentist</option>
-          <option value="Neurologist">Neurologist</option>
+          {specializations.map((spec) => (
+            <option key={spec} value={spec}>
+              {spec  }
+            </option>
+          ))}
         </select>
       </div>
 
