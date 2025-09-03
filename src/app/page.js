@@ -62,9 +62,9 @@ export default function Home() {
                 <Image
                   src={doctorImg}
                   alt="Doctor"
-                  width={400}
-                  height={400}
-                  className="rounded-lg shadow-xl relative z-10"
+                  width={500}
+                  height={500}
+                  className="rounded-lg  relative z-10"
                 />
               </div>
             </div>
