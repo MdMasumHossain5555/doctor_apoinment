@@ -193,7 +193,7 @@ function Login() {
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                  className="w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 sm:text-sm"
                 >
                   <option value="patient">Patient</option>
                   <option value="doctor">Doctor</option>
@@ -205,7 +205,7 @@ function Login() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 {loading ? "Signing in..." : "Sign in"}
               </button>
@@ -216,7 +216,7 @@ function Login() {
             Not a registered user?{" "}
             <Link
               href="/pages/register"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+              className="font-semibold text-blue-600 hover:text-blue-500"
             >
               Register Now.
             </Link>

@@ -54,7 +54,7 @@ export default function DoctorDashboard() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="border p-2 rounded"
+          className="border border-blue-400 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
         >
           <option value="All">All Status</option>
           <option value="Pending">Pending</option>
@@ -72,7 +72,7 @@ export default function DoctorDashboard() {
 
       {/* Appointment Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-300">
+        <table className="w-full border-collapse border border-blue-300">
           <thead className="bg-gray-100">
             <tr>
               <th className="border p-2 text-left">Patient</th>
