@@ -43,9 +43,8 @@ export default function Navbar() {
      }
   const navigation = [
     { name: "Dashboard", href: `/${lowerRole}/dashboard`, current: true },
-    { name: "Team", href: "#", current: false },
-    { name: "Projects", href: "#", current: false },
-    { name: "Calendar", href: "#", current: false },
+    { name: "About Us", href: "#", current: false },
+    { name: "Contruct", href: "#", current: false },
   ];
   console.log("navbar :",role);
   
@@ -72,9 +71,11 @@ export default function Navbar() {
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center text-blue-400">
-              DOCTOR&#39;S
-            </div>
+            <Link href="/" className="flex items-center">
+              <div className="flex shrink-0 items-center text-blue-400">
+                DOCTOR&#39;S
+              </div>
+            </Link>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {navigation.map((item) => (
