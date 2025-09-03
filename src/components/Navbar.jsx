@@ -12,7 +12,8 @@ import { useState, useEffect} from "react";
 import Image from "next/image";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
 
 
 
@@ -24,6 +25,7 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const dispatch = useDispatch();
      const role = useSelector((state) => state.auth.role);
      const token = useSelector((state) => state.auth.token);
      const [mounted, setMounted] = useState(false);
@@ -108,11 +110,25 @@ export default function Navbar() {
             </button>
 
             {/* Login and Register */}
-            <Link href={token ? "#" : "/pages/login"} className="ml-3">
-              <button className="w-[70px] h-10 rounded-[5px] text-white p-2 bg-blue-500 hover:bg-blue-700 ml-1.5">
-                {token ? "Profile" : "Login"}
+            {token ? (
+              <button
+                onClick={() => {
+                  dispatch(logout());
+                  localStorage.removeItem("token");
+                  localStorage.setItem("role", "PATIENT");
+                  window.location.href = '/pages/login';
+                }} // ✅ Logout action dispatch
+                className="w-[70px] h-10 rounded-[5px] text-white p-2 bg-red-500 hover:bg-red-700 ml-1.5"
+              >
+                Logout
               </button>
-            </Link>
+            ) : (
+              <Link href="/pages/login" className="ml-3">
+                <button className="w-[70px] h-10 rounded-[5px] text-white p-2 bg-blue-500 hover:bg-blue-700 ml-1.5">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

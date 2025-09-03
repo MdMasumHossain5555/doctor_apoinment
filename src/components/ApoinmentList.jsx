@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function AppointmentList({ appointments, clicked }) {
   
@@ -46,7 +47,14 @@ export default function AppointmentList({ appointments, clicked }) {
             </div>
             {a.status === "PENDING" && (
               <button
-                onClick={() => clicked(a.id, "CANCELLED")}
+                onClick={() => {
+                  clicked(a.id, "CANCELLED");
+                  Swal.fire({
+                    title: "Cencel?",
+                    text: "Are you sure to cancel the appointment?",
+                    icon: "question",
+                  });
+                }}
                 className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-500"
               >
                 Cancel

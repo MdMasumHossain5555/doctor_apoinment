@@ -12,6 +12,10 @@ import {
 import { updateAppointmentStatus } from "@/lib/api/updateStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStatus, setAppointments, addAppointment } from "@/features/appointments/appointmentsSlice"; 
+import Swal from "sweetalert2";
+
+
+
 export default function Dashboard() {
   const dispatch = useDispatch();
   const [doctors, setDoctors] = useState([]);
@@ -81,9 +85,11 @@ export default function Dashboard() {
       const res = await updateAppointmentStatus(appointmentId, status);
       if (res.status === 200) {
         dispatch(updateStatus({ id: appointmentId, status }));
-       
-        console.log("Appointment status updated:", res.data);
-        alert("Appointment status updated successfully");
+       Swal.fire({
+         title: "Appointment status updated successfully!",
+         icon: "success",
+         draggable: true,
+       });
       }
     } catch (error) {
       console.error("Error updating appointment status:", error);
@@ -107,12 +113,20 @@ export default function Dashboard() {
       const res = await createAppointment(data);
       if (res.status === 201) {
         dispatch(addAppointment(res.data.data));
-        alert("Appointment created successfully");
+        Swal.fire({
+          title: "Appointment created successfully!",
+          icon: "success",
+          draggable: true,
+        });
         setIsModalOpen(false);
       }
     } catch (error) {
-      console.error("Error creating appointment:", error);
-      alert("Failed to create appointment");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to create appointment!",
+        footer: '<a href="#">Why do I have this issue?</a>',
+      });
     }
   };
 
