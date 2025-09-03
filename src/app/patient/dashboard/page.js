@@ -65,7 +65,6 @@ export default function Dashboard() {
       try {
         const res = await getPatinetAppointments({ status: "", page: 1 });
         if (res.status === 200) {
-          console.log("Appointments from patient:", res.data);
           // setAppointments(res.data.data);
           dispatch(setAppointments(res.data.data));
         }

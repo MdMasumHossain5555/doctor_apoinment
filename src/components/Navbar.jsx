@@ -8,7 +8,7 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import Image from "next/image";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -24,19 +24,31 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  let role = useSelector((state) => state.auth.role);
-  role = role ? role.toLowerCase() : null;
-  if(!role){
-    return null;
-  }
+     const role = useSelector((state) => state.auth.role);
+     const token = useSelector((state) => state.auth.token);
+     const [mounted, setMounted] = useState(false);
+     const [activeItem, setActiveItem] = useState(false);
+
+     useEffect(() => {
+       setMounted(true);
+     }, []);
+
+     if (!mounted) {
+       return null; // ✅ এখন safe, কারণ useState/useEffect সবসময় call হচ্ছে
+     }
+
+     const lowerRole = role ? role.toLowerCase() : null;
+     if (!lowerRole) {
+       return null;
+     }
   const navigation = [
-    { name: "Dashboard", href: `${role}/dashboard`, current: true },
+    { name: "Dashboard", href: `/${lowerRole}/dashboard`, current: true },
     { name: "Team", href: "#", current: false },
     { name: "Projects", href: "#", current: false },
     { name: "Calendar", href: "#", current: false },
   ];
   console.log("navbar :",role);
-  const [activeItem, setActiveItem] = useState(false);
+  
   return (
     <Disclosure
       as="nav"
@@ -60,7 +72,9 @@ export default function Navbar() {
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex shrink-0 items-center text-blue-400">DOCTOR&#39;S</div>
+            <div className="flex shrink-0 items-center text-blue-400">
+              DOCTOR&#39;S
+            </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {navigation.map((item) => (
@@ -93,9 +107,9 @@ export default function Navbar() {
             </button>
 
             {/* Login and Register */}
-            <Link href="/pages/login" className="ml-3">
+            <Link href={token ? "#" : "/pages/login"} className="ml-3">
               <button className="w-[70px] h-10 rounded-[5px] text-white p-2 bg-blue-500 hover:bg-blue-700 ml-1.5">
-                Login
+                {token ? "Profile" : "Login"}
               </button>
             </Link>
           </div>

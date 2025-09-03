@@ -1,10 +1,27 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStatus } from "../../../features/appointments/appointmentsSlice";
+import { updateStatus, setAppointments } from "../../../features/appointments/appointmentsSlice";
+import { getDoctorAppointments } from "@/lib/api/doctorApoinment";
+import { updateAppointmentStatus } from "@/lib/api/updateStatus";
 
 export default function DoctorDashboard() {
   const dispatch = useDispatch();
+  useEffect(() => {
+    const data = { status: "", date: "", page: 1 };
+    const fetchAppointments = async () => {
+      try {
+        const res = await getDoctorAppointments(data);
+        if (res.status === 200) {
+          console.log("appoinment form doctor: ", res.data);
+          dispatch(setAppointments(res.data.data));
+        }
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+    fetchAppointments();
+  }, []);
   const appointments = useSelector((state) => state.appointments.list);
 
   const [filterStatus, setFilterStatus] = useState("All");
@@ -23,6 +40,7 @@ export default function DoctorDashboard() {
 
   const handleUpdateStatus = (id, status) => {
     if (confirm(`Mark appointment as ${status}?`)) {
+      updateAppointmentStatus(id, status);
       dispatch(updateStatus({ id, status }));
     }
   };
@@ -66,39 +84,39 @@ export default function DoctorDashboard() {
           </thead>
           <tbody>
             {paginated.length === 0 ? (
-              
               <tr>
                 <td colSpan="5" className="text-center p-4 text-red-500">
                   No appointments found.
-                  </td>
-                  </tr>
-                  ) : (
-            paginated.map((a) => (
-              <tr key={a.id} className="hover:bg-gray-50">
-                <td className="border p-2">{a.patient}</td>
-                <td className="border p-2">{a.date}</td>
-                <td className="border p-2">{a.time}</td>
-                <td className="border p-2">{a.status}</td>
-                <td className="border p-2 space-x-2">
-                  {a.status !== "Completed" && (
-                    <button
-                      onClick={() => handleUpdateStatus(a.id, "Completed")}
-                      className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-500"
-                    >
-                      Completed
-                    </button>
-                  )}
-                  {a.status !== "Cancelled" && (
-                    <button
-                      onClick={() => handleUpdateStatus(a.id, "Cancelled")}
-                      className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-500"
-                    >
-                      Cancelled
-                    </button>
-                  )}
                 </td>
               </tr>
-            )))}
+            ) : (
+              paginated.map((a) => (
+                <tr key={a.id} className="hover:bg-gray-50">
+                  <td className="border p-2">{a.patient}</td>
+                  <td className="border p-2">{a.date}</td>
+                  <td className="border p-2">{a.time}</td>
+                  <td className="border p-2">{a.status}</td>
+                  <td className="border p-2 space-x-2">
+                    {a.status !== "COMPLETED" && (
+                      <button
+                        onClick={() => handleUpdateStatus(a.id, "COMPLETED")}
+                        className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-500"
+                      >
+                        Completed
+                      </button>
+                    )}
+                    {a.status !== "CANCELLED" && (
+                      <button
+                        onClick={() => handleUpdateStatus(a.id, "CANCELLED")}
+                        className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-500"
+                      >
+                        Cancelled
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
