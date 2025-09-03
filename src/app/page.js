@@ -37,7 +37,7 @@ export default function Home() {
                 <h1 className="text-5xl font-bold text-gray-800 mb-4">
                   Find Top Doctors Near You
                 </h1>
-                <p className="text-gray-600 mb-6 text-lg">
+                <p className="text-gray-600  mb-6 text-lg">
                   Book appointments quickly and consult certified doctors from
                   your home.
                 </p>
@@ -58,12 +58,12 @@ export default function Home() {
 
               {/* Image */}
               <div className="md:w-1/2 flex justify-center md:justify-end mt-8 md:mt-0 relative">
-                <div className="absolute -left-16 top-0 w-48 h-full bg-blue-200 rounded-r-full transform rotate-12 hidden md:block"></div>
+                {/* <div className="absolute -left-16 top-0 w-48 h-full bg-blue-200 rounded-r-full transform rotate-12 hidden md:block"></div> */}
                 <Image
                   src={doctorImg}
                   alt="Doctor"
-                  width={500}
-                  height={500}
+                  width={600}
+                  height={600}
                   className="rounded-lg  relative z-10"
                 />
               </div>
