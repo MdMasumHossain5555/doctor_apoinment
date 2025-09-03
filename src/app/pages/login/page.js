@@ -65,7 +65,12 @@ function Login() {
         });
         // alert("Login successful!");
         const user = res.data.data.user;
-        dispatch(loginSuccess(res.data.data.token, user));
+        dispatch(
+          loginSuccess({
+            token: res.data.data.token,
+            user: res.data.data.user,
+          })
+        );
         localStorage.setItem("token", res.data.data.token);
         // Redirect based on role
         if (role === "patient") {
@@ -74,7 +79,7 @@ function Login() {
           }, 1500);
         } else if (role === "doctor") {
           setTimeout(() => {
-          // window.location.href = "/doctor/dashboard";
+          window.location.href = "/doctor/dashboard";
           }, 1500);
         }
       }

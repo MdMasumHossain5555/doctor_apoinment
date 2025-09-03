@@ -10,7 +10,7 @@ export default function AppointmentList({ appointments }) {
       : appointments.filter((a) => a.status === filter);
 
   return (
-    <div>
+    <>
       <div className="flex space-x-2 mb-4">
         {["All", "Pending", "Cancelled", "Completed"].map((status) => (
           <button
@@ -25,6 +25,13 @@ export default function AppointmentList({ appointments }) {
         ))}
       </div>
       <div className="space-y-2">
+        {filtered.length === 0 && (
+          <>
+            <div className="flex justify-center items-center h-32">
+              <p className="text-red-500">No appointments found.</p>
+            </div>
+          </>
+        )}
         {filtered.map((a) => (
           <div
             key={a.id}
@@ -46,6 +53,6 @@ export default function AppointmentList({ appointments }) {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

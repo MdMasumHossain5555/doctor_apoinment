@@ -5,16 +5,25 @@ import AppointmentModal from "../../../components/modal/ApoinmentModal";
 import AppointmentList from "../../../components/ApoinmentList";
 import { getAllDoctors } from "@/lib/api/doctor";
 import { getAllSpecializations } from "@/lib/api/specializations";
+import { getPatinetAppointments } from "@/lib/api/patientApoinment";
 
 export default function Dashboard() {
   const [doctors, setDoctors] = useState([]);
   const [specializations, setSpecializations] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("All");
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [appointments, setAppointments] = useState([]);
+
+
   useEffect(() => {
+    // Fetch specializations from API
     const specializations = async () => {
       try {
         const res = await getAllSpecializations();
         if (res.status === 200) {
-          console.log(res.data.data);
+          // console.log(res.data.data);
           setSpecializations(res.data.data);
         }
       } catch (error) {
@@ -22,6 +31,7 @@ export default function Dashboard() {
       }
     };
     specializations();
+
     // Fetch doctors from API
     const fetchDoctors = async () => {
       try {
@@ -33,29 +43,38 @@ export default function Dashboard() {
         });
         if (res.status === 200) {
           setDoctors(res.data.data);
-          console.log(res.data.data);
+          // console.log(res.data.data);
         }
       } catch (error) {
         console.error("Error fetching doctors:", error);
-      } 
+      }
     };
     fetchDoctors();
+
+    // Fetch patient appointments from API
+    const fetchAppointments = async () => {
+      try {
+        const res = await getPatinetAppointments({ status: "", page: 1 });
+        if (res.status === 200) {
+          console.log("Appointments from patient:", res.data);
+          setAppointments(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+    fetchAppointments();
   }, []);
 
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const appointments = [
-    { id: 1, doctor: "Dr. John Doe", date: "2025-09-10", status: "Pending" },
-    {
-      id: 2,
-      doctor: "Dr. Jane Smith",
-      date: "2025-09-12",
-      status: "Completed",
-    },
-  ];
+  // const appointments = [
+  //   { id: 1, doctor: "Dr. John Doe", date: "2025-09-10", status: "Pending" },
+  //   {
+  //     id: 2,
+  //     doctor: "Dr. Jane Smith",
+  //     date: "2025-09-12",
+  //     status: "Completed",
+  //   },
+  // ];
 
   const filteredDoctors = doctors
     .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
@@ -82,7 +101,7 @@ export default function Dashboard() {
           <option value="All">All Specializations</option>
           {specializations.map((spec) => (
             <option key={spec} value={spec}>
-              {spec  }
+              {spec}
             </option>
           ))}
         </select>
@@ -110,6 +129,7 @@ export default function Dashboard() {
       />
 
       {/* My Appointments */}
+
       <div className="mt-10">
         <h2 className="text-xl font-bold mb-4">My Appointments</h2>
         <AppointmentList appointments={appointments} />

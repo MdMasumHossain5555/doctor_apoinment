@@ -1,13 +1,17 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DoctorCard({ doctor, onBook }) {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center space-y-2">
-      <Link
-        href={"#"}
+      <Image
+        src={doctor.photo_url || "/default-avatar.jpg"}
+        width={96}
+        height={96}
         alt={doctor.name}
+        unoptimized
         className="w-24 h-24 rounded-full object-cover"
       />
       <h3 className="text-lg font-semibold">{doctor.name}</h3>
