@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
 
-export default function AppointmentList({ appointments }) {
+export default function AppointmentList({ appointments, clicked }) {
+  
+
   const [filter, setFilter] = useState("All");
 
   const filtered =
@@ -12,7 +14,7 @@ export default function AppointmentList({ appointments }) {
   return (
     <>
       <div className="flex space-x-2 mb-4">
-        {["All", "Pending", "Cancelled", "Completed"].map((status) => (
+        {["All", "PENDING", "CANCELLED", "COMPLETED"].map((status, clicked) => (
           <button
             key={status}
             onClick={() => setFilter(status)}
@@ -38,13 +40,13 @@ export default function AppointmentList({ appointments }) {
             className="border rounded p-3 flex justify-between items-center"
           >
             <div>
-              <p className="font-semibold">{a.doctor}</p>
+              <p className="font-semibold">{a.doctor.name}</p>
               <p className="text-gray-500">{a.date}</p>
               <p className="text-gray-400">{a.status}</p>
             </div>
-            {a.status === "Pending" && (
+            {a.status === "PENDING" && (
               <button
-                onClick={() => alert("Cancelled")}
+                onClick={() => clicked(a.id, "CANCELLED")}
                 className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-500"
               >
                 Cancel

@@ -6,6 +6,7 @@ const initialState = {
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   loading: false,
   error: null,
+  role: typeof window !== "undefined" ? localStorage.getItem("role") : null,
 };
 
 const authSlice = createSlice({
@@ -20,6 +21,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.role = action.payload.role;
     },
     loginFailure: (state, action) => {
       state.loading = false;

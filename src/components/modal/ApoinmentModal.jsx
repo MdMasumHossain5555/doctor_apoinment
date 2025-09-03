@@ -1,11 +1,14 @@
 "use client";
 import React, { useState } from "react";
 
-export default function AppointmentModal({ doctor, isOpen, onClose }) {
+export default function AppointmentModal({ doctor, isOpen, onClose, clicke, clickedDate }) {
+  // console.log("Doctor in modal:", doctor);
   const [date, setDate] = useState("");
 
   if (!isOpen) return null;
-
+  const handelSubmit = () => {
+    clicke(doctor.id, date);
+  }
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-80">
@@ -24,7 +27,8 @@ export default function AppointmentModal({ doctor, isOpen, onClose }) {
           </button>
           <button
             onClick={() => {
-              alert(`Appointment booked on ${date}`);
+              // alert(`Appointment booked on ${date}`);
+              handelSubmit();
               onClose();
             }}
             className="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-500"

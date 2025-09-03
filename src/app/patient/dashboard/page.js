@@ -5,17 +5,26 @@ import AppointmentModal from "../../../components/modal/ApoinmentModal";
 import AppointmentList from "../../../components/ApoinmentList";
 import { getAllDoctors } from "@/lib/api/doctor";
 import { getAllSpecializations } from "@/lib/api/specializations";
-import { getPatinetAppointments } from "@/lib/api/patientApoinment";
-
+import {
+  getPatinetAppointments,
+  createAppointment,
+} from "@/lib/api/patientApoinment";
+import { updateAppointmentStatus } from "@/lib/api/updateStatus";
+import { useDispatch, useSelector } from "react-redux";
+import { updateStatus, setAppointments, addAppointment } from "@/features/appointments/appointmentsSlice"; 
 export default function Dashboard() {
+  const dispatch = useDispatch();
   const [doctors, setDoctors] = useState([]);
   const [specializations, setSpecializations] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [appointments, setAppointments] = useState([]);
-
+  const appointments = useSelector((state) => state.appointments.list);
+  const [page, setPage] = useState(1);
+  const perPage = 6;
+  const totalPages = Math.ceil(doctors.length / perPage);
+  
 
   useEffect(() => {
     // Fetch specializations from API
@@ -57,7 +66,8 @@ export default function Dashboard() {
         const res = await getPatinetAppointments({ status: "", page: 1 });
         if (res.status === 200) {
           console.log("Appointments from patient:", res.data);
-          setAppointments(res.data.data);
+          // setAppointments(res.data.data);
+          dispatch(setAppointments(res.data.data));
         }
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -66,19 +76,46 @@ export default function Dashboard() {
     fetchAppointments();
   }, []);
 
-  // const appointments = [
-  //   { id: 1, doctor: "Dr. John Doe", date: "2025-09-10", status: "Pending" },
-  //   {
-  //     id: 2,
-  //     doctor: "Dr. Jane Smith",
-  //     date: "2025-09-12",
-  //     status: "Completed",
-  //   },
-  // ];
+  // Update appointment status
+  const handleStuatusUpdate = async (appointmentId, status) => {
+    try {
+      const res = await updateAppointmentStatus(appointmentId, status);
+      if (res.status === 200) {
+        dispatch(updateStatus({ id: appointmentId, status }));
+       
+        console.log("Appointment status updated:", res.data);
+        alert("Appointment status updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating appointment status:", error);
+      alert("Failed to update appointment status");
+    }
+  };
 
   const filteredDoctors = doctors
     .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
     .filter((d) => filter === "All" || d.specialization === filter);
+
+    const paginatedDoctors = filteredDoctors.slice(
+      (page - 1) * perPage,
+      page * perPage
+    );
+
+  // Create apoinment
+  const handleCreateAppointment = async (data) => {
+    console.log("Creating appointment with data:", data);
+    try {
+      const res = await createAppointment(data);
+      if (res.status === 201) {
+        dispatch(addAppointment(res.data.data));
+        alert("Appointment created successfully");
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      alert("Failed to create appointment");
+    }
+  };
 
   return (
     <div className="p-6 space-y-8">
@@ -91,16 +128,16 @@ export default function Dashboard() {
           placeholder="Search by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-1/2"
+          className="border border-blue-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 p-2 rounded w-1/2"
         />
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border p-2 rounded"
+          className="border border-blue-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 p-2 rounded"
         >
           <option value="All">All Specializations</option>
-          {specializations.map((spec) => (
-            <option key={spec} value={spec}>
+          {specializations.map((spec, idx) => (
+            <option key={idx} value={spec}>
               {spec}
             </option>
           ))}
@@ -109,7 +146,7 @@ export default function Dashboard() {
 
       {/* Doctor Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {filteredDoctors.map((d) => (
+        {paginatedDoctors.map((d) => (
           <DoctorCard
             key={d.id}
             doctor={d}
@@ -121,18 +158,48 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {/* Pagination */}
+      <div className="flex justify-center space-x-2 mt-4">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="px-3 py-1 border rounded">{page}</span>
+        <button
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+          disabled={page === totalPages}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+
       {/* Appointment Modal */}
       <AppointmentModal
         doctor={selectedDoctor}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        clicke={(doctor, date) => {
+          console.log("Data received from modal:", doctor, date);
+          const data = { doctorId: doctor, date };
+          // setData({ doctorId: doctor.id, date });
+          handleCreateAppointment(data);
+        }}
       />
 
       {/* My Appointments */}
 
       <div className="mt-10">
         <h2 className="text-xl font-bold mb-4">My Appointments</h2>
-        <AppointmentList appointments={appointments} />
+        <AppointmentList
+          appointments={appointments}
+          clicked={(appointmentId, status) =>
+            handleStuatusUpdate(appointmentId, status)
+          }
+        />
       </div>
     </div>
   );

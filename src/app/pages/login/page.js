@@ -69,9 +69,11 @@ function Login() {
           loginSuccess({
             token: res.data.data.token,
             user: res.data.data.user,
+            role : res.data.data.user.role,
           })
         );
         localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("role", res.data.data.user.role);
         // Redirect based on role
         if (role === "patient") {
           setTimeout(() => {

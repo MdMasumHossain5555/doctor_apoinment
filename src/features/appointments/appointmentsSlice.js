@@ -2,36 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  list: [
-    {
-      id: 1,
-      patient: "Alice Johnson",
-      date: "2025-09-02",
-      time: "10:00 AM",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      patient: "Bob Smith",
-      date: "2025-09-03",
-      time: "11:30 AM",
-      status: "Completed",
-    },
-    {
-      id: 3,
-      patient: "Charlie Lee",
-      date: "2025-09-04",
-      time: "02:00 PM",
-      status: "Pending",
-    },
-    {
-      id: 4,
-      patient: "David Kim",
-      date: "2025-09-05",
-      time: "09:30 AM",
-      status: "Cancelled",
-    },
-  ],
+  list: [],
 };
 
 const appointmentsSlice = createSlice({
@@ -45,8 +16,11 @@ const appointmentsSlice = createSlice({
     setAppointments: (state, action) => {
       state.list = action.payload;
     },
+    addAppointment: (state, action) => {
+      state.list.push(action.payload);
+    },
   },
 });
 
-export const { updateStatus, setAppointments } = appointmentsSlice.actions;
+export const { updateStatus, setAppointments, addAppointment } = appointmentsSlice.actions;
 export default appointmentsSlice.reducer;

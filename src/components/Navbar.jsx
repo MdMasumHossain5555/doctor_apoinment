@@ -12,20 +12,30 @@ import { useState } from "react";
 import Image from "next/image";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-];
+
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar() {
+  let role = useSelector((state) => state.auth.role);
+  role = role ? role.toLowerCase() : null;
+  if(!role){
+    return null;
+  }
+  const navigation = [
+    { name: "Dashboard", href: `${role}/dashboard`, current: true },
+    { name: "Team", href: "#", current: false },
+    { name: "Projects", href: "#", current: false },
+    { name: "Calendar", href: "#", current: false },
+  ];
+  console.log("navbar :",role);
   const [activeItem, setActiveItem] = useState(false);
   return (
     <Disclosure

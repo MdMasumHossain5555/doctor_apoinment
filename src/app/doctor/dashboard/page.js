@@ -65,7 +65,15 @@ export default function DoctorDashboard() {
             </tr>
           </thead>
           <tbody>
-            {paginated.map((a) => (
+            {paginated.length === 0 ? (
+              
+              <tr>
+                <td colSpan="5" className="text-center p-4 text-red-500">
+                  No appointments found.
+                  </td>
+                  </tr>
+                  ) : (
+            paginated.map((a) => (
               <tr key={a.id} className="hover:bg-gray-50">
                 <td className="border p-2">{a.patient}</td>
                 <td className="border p-2">{a.date}</td>
@@ -90,7 +98,7 @@ export default function DoctorDashboard() {
                   )}
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>
