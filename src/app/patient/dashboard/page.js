@@ -11,10 +11,12 @@ import {
 } from "@/lib/api/patientApoinment";
 import { updateAppointmentStatus } from "@/lib/api/updateStatus";
 import { useDispatch, useSelector } from "react-redux";
-import { updateStatus, setAppointments, addAppointment } from "@/features/appointments/appointmentsSlice"; 
+import {
+  updateStatus,
+  setAppointments,
+  addAppointment,
+} from "@/features/appointments/appointmentsSlice";
 import Swal from "sweetalert2";
-
-
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const perPage = 6;
   const totalPages = Math.ceil(doctors.length / perPage);
-  
+  const token = useSelector((state) => state?.auth?.token);
 
   useEffect(() => {
     // Fetch specializations from API
@@ -85,11 +87,11 @@ export default function Dashboard() {
       const res = await updateAppointmentStatus(appointmentId, status);
       if (res.status === 200) {
         dispatch(updateStatus({ id: appointmentId, status }));
-       Swal.fire({
-         title: "Appointment status updated successfully!",
-         icon: "success",
-         draggable: true,
-       });
+        Swal.fire({
+          title: "Appointment status updated successfully!",
+          icon: "success",
+          draggable: true,
+        });
       }
     } catch (error) {
       console.error("Error updating appointment status:", error);
@@ -101,32 +103,45 @@ export default function Dashboard() {
     .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
     .filter((d) => filter === "All" || d.specialization === filter);
 
-    const paginatedDoctors = filteredDoctors.slice(
-      (page - 1) * perPage,
-      page * perPage
-    );
+  const paginatedDoctors = filteredDoctors.slice(
+    (page - 1) * perPage,
+    page * perPage
+  );
 
   // Create apoinment
   const handleCreateAppointment = async (data) => {
     console.log("Creating appointment with data:", data);
-    try {
-      const res = await createAppointment(data);
-      if (res.status === 201) {
-        dispatch(addAppointment(res.data.data));
-        Swal.fire({
-          title: "Appointment created successfully!",
-          icon: "success",
-          draggable: true,
-        });
-        setIsModalOpen(false);
+    if (!token) {
+      window.location.href = "/pages/login";
+    } else {
+      try {
+        const res = await createAppointment(data);
+        if (res.status === 201) {
+          dispatch(addAppointment(res.data.data));
+          Swal.fire({
+            title: "Appointment created successfully!",
+            icon: "success",
+            draggable: true,
+          });
+          setIsModalOpen(false);
+        }
+      } catch (error) {
+        if(error.response?.status === 409){
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Appointment already booked for this doctor and time!",
+            footer: '<a href="#">Why do I have this issue?</a>',
+          });
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Failed to create appointment!",
+            footer: '<a href="#">Why do I have this issue?</a>',
+          });
+        }
       }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Failed to create appointment!",
-        footer: '<a href="#">Why do I have this issue?</a>',
-      });
     }
   };
 
