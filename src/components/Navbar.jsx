@@ -36,10 +36,10 @@ export default function Navbar() {
      }, []);
 
      if (!mounted) {
-       return null; // ✅ এখন safe, কারণ useState/useEffect সবসময় call হচ্ছে
+       return null; 
      }
 
-     const lowerRole = role ? role.toLowerCase() : null;
+     const lowerRole = role ? role.toLowerCase() : "patient";
      if (!lowerRole) {
        return null;
      }

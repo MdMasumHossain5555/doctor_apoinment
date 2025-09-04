@@ -48,11 +48,25 @@ export default function AppointmentList({ appointments, clicked }) {
             {a.status === "PENDING" && (
               <button
                 onClick={() => {
-                  clicked(a.id, "CANCELLED");
                   Swal.fire({
-                    title: "Cencel?",
+                    title: "Cancel?",
                     text: "Are you sure to cancel the appointment?",
                     icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, cancel it!",
+                    cancelButtonText: "No, keep it",
+                    customClass: {
+                      confirmButton:
+                        "bg-red-600 text-white mr-2 px-4 py-2 rounded hover:bg-red-500",
+                      cancelButton:
+                        "bg-green-300 text-black ml-2 px-4 py-2 rounded hover:bg-green-400",
+                    },
+                    buttonsStyling: false,
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      // ✅ Only run if user clicks OK
+                      clicked(a.id, "CANCELLED");
+                    }
                   });
                 }}
                 className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-500"
