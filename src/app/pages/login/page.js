@@ -75,7 +75,7 @@ function Login() {
         localStorage.setItem("token", res.data.data.token);
         localStorage.setItem("role", res.data.data.user.role);
         // Redirect based on role
-        if (role === "patient") {
+        if (res.data.data.user.role === "patient") {
           setTimeout(() => {
           window.location.href = "/patient/dashboard";
           }, 1500);
